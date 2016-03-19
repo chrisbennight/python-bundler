@@ -101,6 +101,14 @@ def create_archive(basedir, destdir):
                                 sibling,
                                 chunk)
                 writer.append(file)
+
+
+        for f in all_files:
+            os.remove(f)
+
+        for d in all_dirs:
+            os.rmdir(d)
+
     finally:
         writer.close()
         fd.close()
