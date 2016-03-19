@@ -71,7 +71,7 @@ def create_archive(basedir, destdir):
             file = os.path.join(path, f)
             all_files.append(file)
 
-    schema = avro.schema.parse(open("avro-schemas.json").read())
+    schema = avro.schema.parse(open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "avro-schemas.json")).read())
     fileprefix = time.strftime("%Y%m%d-%H%M%S")
     avrofile = fileprefix + "-part-0001.avro"
     iteration = 1
