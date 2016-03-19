@@ -1,0 +1,35 @@
+[
+  {
+    "namespace": "filepacker.avro",
+    "type": "enum",
+    "name": "FSObjectType",
+    "symbols": [
+      "FILE",
+      "DIRECTORY"
+    ]
+  },
+  {
+    "namespace": "filepacker.avro",
+    "type": "record",
+    "name": "FSObject",
+    "fields": [
+      {"name": "FSType", "type": "FSObjectType"},
+      {"name": "Name", "type": "string"},
+      {"name": "RelativePath", "type": "string"},
+      {"name": "NumberSiblings", "type": "int" },
+      {"name": "SiblingPartNumber", "type": "int"},
+      {"name": "ContentMD5", "type": ["null", "string"]},
+      {"name": "Content", "type": ["null", "bytes"]}
+    ]
+  },
+  {
+    "namespace": "filepacker.avro",
+    "type": "record",
+    "name": "FSObjectCollection",
+    "fields": [
+      {"name": "FSObjects", "type": {"type": "array", "items":"FSObject"}},
+      {"name": "NumberSiblings", "type": "int"},
+      {"name": "SiblingPartNumber", "type": "int"}
+    ]
+  }
+]
