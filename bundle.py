@@ -41,7 +41,7 @@ def get_file_chunks(file):
     sibling_number = 0
     with open(file, 'rb') as fd:
         while True:
-            data = fd.read(maxfilesize)
+            data = fd.read(maxfilesize / 10)
             if not data:
                 break
             yield sibling_number, numsiblings, data
@@ -54,7 +54,7 @@ def rotate_avro_file(fd, writer, iteration, fileprefix, destdir, datum, schema):
     writer.close()
     fd.close()
     fd = open(os.path.join(destdir, avrofile), 'wb')
-    writer = DataFileWriter(fd, datum, schema,codec='deflate')
+    writer = DataFileWriter(fd, datum, schema, codec='deflate')
     return fd, writer, iteration
 
 
@@ -71,7 +71,8 @@ def create_archive(basedir, destdir):
             file = os.path.join(path, f)
             all_files.append(file)
 
-    schema = avro.schema.parse(open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "avro-schemas.json")).read())
+    schema = avro.schema.parse(
+        open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "avro-schemas.json")).read())
     fileprefix = time.strftime("%Y%m%d-%H%M%S")
     avrofile = fileprefix + "-part-0001.avro"
     iteration = 1
@@ -88,7 +89,7 @@ def create_archive(basedir, destdir):
         for f in all_files:
             for sibling, numsiblings, chunk in get_file_chunks(f):
                 if (fd.tell() + len(chunk)) > maxfilesize * 1.1:
-                   fd, writer, iteration = rotate_avro_file(fd,
+                    fd, writer, iteration = rotate_avro_file(fd,
                                                              writer,
                                                              iteration,
                                                              fileprefix,
@@ -101,7 +102,8 @@ def create_archive(basedir, destdir):
                                 sibling,
                                 chunk)
                 writer.append(file)
-
+                writer.flush()
+                del file
 
         for f in all_files:
             os.remove(f)
@@ -112,8 +114,3 @@ def create_archive(basedir, destdir):
     finally:
         writer.close()
         fd.close()
-
-
-
-
-
